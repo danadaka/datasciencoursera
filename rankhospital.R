@@ -35,6 +35,11 @@ rankhospital <- function(state, outcome, num = "best") {
         mutate(rating = row_number()) %>%
         filter(rating == num) %>%
         pull(Hospital.Name)
+      
+      res <- if (is_empty(res)) {
+        NA
+      } else {res}
+      
     }
   } else if (state %in% states & (!outcome %in% outcomes)) {
     stop()

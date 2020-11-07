@@ -25,6 +25,7 @@ best <- function(state, outcome) {
     pivot_longer(cols = 3:5, names_to = "type", values_to = "death_rate") %>%
     mutate(
       State = as.character(State),
+      death_rate = as.numeric(as.character(death_rate)),
       Hospital.Name = as.character(Hospital.Name))
   
   states <- data %>% distinct(State) %>% pull()
