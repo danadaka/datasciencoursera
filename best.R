@@ -22,31 +22,21 @@ best <- function(state, outcome) {
            `heart attack` = "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Attack",
            `heart failure` = "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure",
            `pneumonia` = "Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia") %>%
-    pivot_longer(cols = 3:5, names_to = "outcome", values_to = "death_rate") %>%
+    pivot_longer(cols = 3:5, names_to = "type", values_to = "death_rate") %>%
     mutate(
       State = as.character(State),
-      hospital = as.character(Hospital.Name))
+      Hospital.Name = as.character(Hospital.Name))
   
   states <- data %>% distinct(State) %>% pull()
-  outcomes <- c("heart attack”, “heart failure”, “pneumonia")
-  
-  result <- data %>% 
-    filter(State == state, outcome == outcome) %>%
-    arrange(death_rate, hospital) %>%
-    slice(1) %>%
-    pull(hospital)
-  
-  if (is_empty())
-  
+  outcomes <- c("heart attack", "heart failure", "pneumonia")
   
   if (state %in% states & outcome %in% outcomes) {
-    result <- data %>% 
-      filter(State == state, outcome == outcome) %>%
-      arrange(death_rate, hospital) %>%
+    res <- data %>% 
+      filter(State == state, type == outcome, death_rate != "Not Available") %>%
+      arrange(death_rate, Hospital.Name) %>%
       slice(1) %>%
-      pull(hospital)
+      pull(Hospital.Name)
     
-    return(result)
   } else if (state %in% states & (!outcome %in% outcomes)) {
     stop()
     geterrmessage("outcome is invalid") 
@@ -57,16 +47,9 @@ best <- function(state, outcome) {
     stop()
     geterrmessage("both state and outcome are invalid")
   }
-
+  return(res)
 }
 
 best("AL", "heart failure")
+best("TX", "heart attack")
 
-data %>% 
-  filter(State == "SC", outcome == "heart attack") %>%
-  arrange(death_rate, hospital) %>%
-  slice(1) %>%
-  pull(hospital)
-
-
-data %>% str()
