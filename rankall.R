@@ -1,4 +1,5 @@
-rankhospital <- function(state, outcome, num = "best") {
+
+rankall <- function(outcome, num = "best") {
   
   suppressMessages(require(tidyverse))
   
@@ -10,51 +11,48 @@ rankhospital <- function(state, outcome, num = "best") {
       `heart failure` = "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure",
       `pneumonia` = "Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia") %>%
     pivot_longer(cols = 3:5, names_to = "type", values_to = "death_rate") %>%
-    filter(death_rate != "Not Available") %>%
+    filter( death_rate != "Not Available") %>%
     mutate(
       State = as.character(State),
       death_rate = as.numeric(as.character(death_rate)),
-      Hospital.Name = as.character(Hospital.Name))
+      Hospital.Name = as.character(Hospital.Name)) %>%
+    group_by(State)
   
-  states <- data %>% distinct(State) %>% pull()
   outcomes <- c("heart attack", "heart failure", "pneumonia")
   
-  if (state %in% states & outcome %in% outcomes) {
-    if (num == "best") {
-      res <- data %>% 
-        filter(State == state, type == outcome) %>%
+  if(outcome %in% outcomes) {
+    data_filtered <- data %>% 
+      filter(type == outcome) 
+    
+    states <- data_filtered %>%
+      distinct(State) %>%
+      arrange(State)
+    
+    result <- if (num == "best") {
+      data_filtered %>% 
         arrange(death_rate, Hospital.Name) %>%
         slice(1) %>%
-        pull(Hospital.Name)
+        select(Hospital.Name, State)
     } else if (num == "worst") {
-      res <- data %>% 
-        filter(State == state, type == outcome) %>%
+      data_filtered %>% 
         arrange(desc(death_rate), Hospital.Name) %>%
         slice(1) %>%
-        pull(Hospital.Name)
+        select(Hospital.Name, State)
     } else {
-      res <- data %>% 
-        filter(State == state, type == outcome) %>%
+      data_filtered %>%
         arrange(death_rate, Hospital.Name) %>%
         mutate(rating = row_number()) %>%
         filter(rating == num) %>%
-        pull(Hospital.Name)
-      
-      res <- if (is_empty(res)) {
-        NA
-      } else {res}
+        select(Hospital.Name, State)
     }
-  } else if (state %in% states & (!outcome %in% outcomes)) {
-    stop("invalid outcome")
-  } else if ((!state %in% states) & outcome %in% outcomes) {
-    stop("invalid state")
+    
+    res <- states %>%
+      left_join(result, by = "State")
+    
   } else {
-    stop("invalid state and outcome")
-  }
-  
+  stop("invalid outcome")
+  } 
   geterrmessage()
   return(res)
 }
-
-  
   

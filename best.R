@@ -16,6 +16,8 @@
 
 best <- function(state, outcome) {
   
+  suppressMessages(require(tidyverse))
+  
   data <- read.csv("data/week3data/outcome-of-care-measures.csv") %>%
     select(State, 
            Hospital.Name,
@@ -39,18 +41,13 @@ best <- function(state, outcome) {
       pull(Hospital.Name)
     
   } else if (state %in% states & (!outcome %in% outcomes)) {
-    stop()
-    geterrmessage("outcome is invalid") 
+    stop("invalid outcome")
   } else if ((!state %in% states) & outcome %in% outcomes) {
-    stop()
-    geterrmessage("state is invalid")
+    stop("invalid state")
   } else {
-    stop()
-    geterrmessage("both state and outcome are invalid")
+    stop("invalid state and outcome")
   }
+  geterrmessage() 
   return(res)
 }
-
-best("AL", "heart failure")
-best("TX", "heart attack")
 
