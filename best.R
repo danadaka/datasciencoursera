@@ -1,6 +1,6 @@
 
 ## Write a function called best that take two arguments:  the 2-character 
-## abbreviated name of a state and anoutcome name.  The function reads 
+## abbreviated name of a state and an outcome name.  The function reads 
 ## the outcome-of-care-measures.csv file and returns a character vector with  
 ## the  name  of  the  hospital  that  has  the  best  (i.e.   lowest)  30-day  
 ## mortality  for  the  specified  outcome in that state.  The hospital name is 
@@ -25,6 +25,7 @@ best <- function(state, outcome) {
            `heart failure` = "Hospital.30.Day.Death..Mortality..Rates.from.Heart.Failure",
            `pneumonia` = "Hospital.30.Day.Death..Mortality..Rates.from.Pneumonia") %>%
     pivot_longer(cols = 3:5, names_to = "type", values_to = "death_rate") %>%
+    filter( death_rate != "Not Available") %>%
     mutate(
       State = as.character(State),
       death_rate = as.numeric(as.character(death_rate)),
@@ -35,7 +36,7 @@ best <- function(state, outcome) {
   
   if (state %in% states & outcome %in% outcomes) {
     res <- data %>% 
-      filter(State == state, type == outcome, death_rate != "Not Available") %>%
+      filter(State == state, type == outcome) %>%
       arrange(death_rate, Hospital.Name) %>%
       slice(1) %>%
       pull(Hospital.Name)

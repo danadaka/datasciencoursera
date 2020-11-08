@@ -1,3 +1,23 @@
+## Write a function called rankhospital that takes three arguments:  
+## the 2-character abbreviated name of astate (state), an outcome (outcome), 
+## and the ranking of a hospital in that state for that outcome (num). 
+## The function reads the outcome-of-care-measures.csv file and returns 
+## a character vector with the name of the hospital that has the ranking 
+## specified by the num argument. 
+##
+## The num argument can take values “best”, “worst”,  or an integer indicating 
+## the ranking (smaller numbers are better).  If the number given by num is 
+## larger than the number of hospitals in that state, then the function should 
+## return NA. Hospitals that do not have data on a particular outcome should 
+## be excluded from the set of hospitals when deciding the rankings.
+## 
+## The function should check the validity of its arguments.  If an invalid 
+## state value is passed to rankhospital, the function should throw an error 
+## via the stop function with the exact message “invalid state”.  If an 
+## invalid outcome value is passed to rankhospital, the function should throw 
+## an error via the stop function with the exact message “invalid outcome”
+
+
 rankhospital <- function(state, outcome, num = "best") {
   
   suppressMessages(require(tidyverse))
