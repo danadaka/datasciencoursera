@@ -1,0 +1,6 @@
+Code book
+
+activity - the activity label.
+subject - the ID of a participant.
+
+Any column started with "avg" is the column indicating the mean value of a variable label of which is given after "_" for each subject and each activity. For example, avg_tBodyAcc-mean()-X is the mean of tBodyAcc-mean()-X which is fully described in the file "data/uci_har_dataset/features_info.txt" for each subject and each activity.

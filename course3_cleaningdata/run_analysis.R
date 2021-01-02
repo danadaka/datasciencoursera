@@ -1,9 +1,6 @@
 
 library(tidyverse)
 
-read_delim(delim = "\ ")
-
-
 features <- 
   read_delim(here::here("data/uci_har_dataset/features.txt"),
              delim = " ", 
