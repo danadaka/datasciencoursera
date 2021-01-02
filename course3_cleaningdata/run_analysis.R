@@ -65,4 +65,9 @@ dataset_mean_std <-
 summarised_dataset <- 
   dataset_mean_std %>% 
   group_by(subject, activity) %>% 
-  summarise(across(contains(c("mean", "std")), mean, .names = "avg_{col}")) 
+  summarise(across(contains(c("mean", "std")), mean, .names = "avg_{col}")) %>%
+  ungroup()
+
+summarised_dataset %>%
+  write.table(file = "course3_cleaningdata/uci_har_summarised.txt", 
+              row.names = FALSE)
